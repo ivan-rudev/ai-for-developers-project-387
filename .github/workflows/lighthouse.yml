@@ -14,6 +14,9 @@ jobs:
   lhci:
     name: Lighthouse
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
       - name: Use Node.js 20.x
@@ -31,7 +34,5 @@ jobs:
         with:
           path: ./lhci-reports
       - name: Deploy to GitHub Pages
+        id: deploy
         uses: actions/deploy-pages@v4
-        with:
-          environment:
-            name: github-pages
