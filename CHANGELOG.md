@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.0...v1.0.1) (2026-08-25)
+
+
+### Bug Fixes
+
+* **ci:** update Lighthouse workflow to use Node 20 and correct build script ([c76ece3](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/c76ece34de05b1fbede2f5099aa2a17f9e7c05f8))
+
 ## 1.0.0 (2026-08-25)
 
 
