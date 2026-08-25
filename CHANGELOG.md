@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.3](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.2...v1.0.3) (2026-08-25)
+
+
+### Bug Fixes
+
+* **ci:** migrate opencode workflows from OPENAI_API_KEY to OPENCODE_API_KEY with opencode/big-pickle model ([5c81136](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/5c81136))
+* **ci:** added the ability to manually trigger release creation ([7954602](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/7954602503e7ca64926cef798cfd30f9090e3a8c))
+* **ci:** skip opencode review for release-please PRs ([f5c8f05](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/f5c8f0546417560748550699ba184e6f7cb2cca7))
+* **ci:** upgrade actions to Node.js 24-compatible versions ([15326f1](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/15326f19364063ca653b2711e8bac61798b2ea6f))
+* **ci:** wrap contains() to avoid YAML tag syntax error ([713878e](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/713878e7951b2667d01584287fa3e061e8d1fe1a))
+* **lighthouse:** add index.html redirect for GitHub Pages ([f1ab297](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/f1ab297eb0cd7b9844299c6dcd96a23b26ee73fd))
+* **lighthouse:** move environment to job level, remove invalid with block ([3d0a4d6](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/3d0a4d6976cb7987898cf3166ba3adcc6f411e50))
+* **lighthouse:** rename reporting to report, add index.html redirect ([df6bf6d](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/df6bf6daeb4b678f60034d51a491b665455093c3))
+* **lighthouse:** use filesystem upload target for HTML reports ([ad12ff3](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/ad12ff3ede9cab9b7ee452b3cd5bfba8ada49750))
+
 ## [1.0.2](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.1...v1.0.2) (2026-08-25)
 
 
