@@ -6,6 +6,10 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions:
+  pages: write
+  id-token: write
+
 jobs:
   lhci:
     name: Lighthouse
@@ -20,3 +24,14 @@ jobs:
         run: |
           npm install -g @lhci/cli@0.15.x
           lhci autorun
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./lhci-reports
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          environment:
+            name: github-pages
