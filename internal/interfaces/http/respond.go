@@ -50,6 +50,8 @@ func statusOfError(err error) (int, string, string) {
 		return nethttp.StatusConflict, "conflict", messageOr(err, "conflict")
 	case errors.Is(err, domain.ErrInvalidInput):
 		return nethttp.StatusBadRequest, "invalid_input", messageOr(err, "invalid input")
+	case errors.Is(err, domain.ErrRequestBodyTooLarge):
+		return nethttp.StatusRequestEntityTooLarge, "request_body_too_large", "request body too large"
 	default:
 		return nethttp.StatusInternalServerError, "internal_error", "internal server error"
 	}
@@ -65,10 +67,20 @@ func messageOr(err error, fallback string) string {
 
 // decodeJSON разбирает тело запроса как JSON.
 func decodeJSON(r *nethttp.Request, v any) error {
+	const maxBodySize = 1 << 20 // 1 MB
 	if r.Body == nil {
 		return domain.ErrInvalidInput
 	}
-	if err := json.NewDecoder(r.Body).Decode(v); err != nil {
+	// Limit request body size to prevent large memory allocation
+	r.Body = nethttp.MaxBytesReader(nil, r.Body, maxBodySize)
+	defer r.Body.Close()
+
+	dec := json.NewDecoder(r.Body)
+	if err := dec.Decode(v); err != nil {
+		var maxBytesErr nethttp.MaxBytesError
+		if errors.As(err, &maxBytesErr) {
+			return domain.ErrRequestBodyTooLarge
+		}
 		return domain.ErrInvalidInput
 	}
 	return nil

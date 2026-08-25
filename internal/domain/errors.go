@@ -3,6 +3,8 @@ package domain
 import "errors"
 
 var (
+	// ErrRequestBodyTooLarge - тело запроса превышает максимально разрешённый размер.
+	ErrRequestBodyTooLarge = errors.New("request body too large")
 	// ErrNotFound - сущность (owner, guest, event, booking) не найдена.
 	ErrNotFound = errors.New("not found")
 	// ErrConflict - конфликт уникальности (email, название события).
