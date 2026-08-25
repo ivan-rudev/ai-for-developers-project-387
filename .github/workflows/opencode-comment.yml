@@ -31,9 +31,9 @@ jobs:
       - name: Run opencode
         uses: anomalyco/opencode/github@latest
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
-          model: openai/gpt-4.1-mini
+          model: opencode/big-pickle
           prompt: |
             You are a code assistant responding to a /oc or /opencode command.
             By default, answer questions, explain code, or provide analysis

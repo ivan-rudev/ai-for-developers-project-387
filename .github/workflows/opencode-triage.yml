@@ -27,9 +27,9 @@ jobs:
       - uses: anomalyco/opencode/github@latest
         if: steps.check.outputs.result == 'true'
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
-          model: openai/gpt-4.1-mini
+          model: opencode/big-pickle
           prompt: |
             You are a triage agent. DO NOT create pull requests, branches,
             or push code changes. Only leave a comment on the issue.

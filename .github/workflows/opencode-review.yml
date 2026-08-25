@@ -21,9 +21,9 @@ jobs:
       - name: Run OpenCode review
         uses: anomalyco/opencode/github@latest
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
-          model: openai/gpt-4.1-mini
+          model: opencode/big-pickle
           prompt: |
             Review this pull request:
             - Find bugs and risky changes
