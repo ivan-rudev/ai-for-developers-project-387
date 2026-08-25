@@ -1,0 +1,39 @@
+name: Weekly Code Audit
+on:
+  schedule:
+    - cron: "0 5 * * *"  # Every day at 5am UTC
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "Task for OpenCode"
+        required: true
+        type: string
+      model:
+        description: "Model to use"
+        required: false
+        default: "openai/gpt-5.4"
+        type: string
+jobs:
+  opencode-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Run OpenCode
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          model: openai/gpt-4.1-mini
+          prompt: |
+            Review the codebase for TODO, FIXME, and HACK comments.
+            Group findings by file and severity.
+            Create a single issue with a structured summary.
+            If similar issues already exist, reference them.
