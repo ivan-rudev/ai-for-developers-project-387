@@ -157,6 +157,39 @@ func (s *testServer) addAlice() (*domain.Owner, *domain.Event) {
 	return alice, ev
 }
 
+func TestDecodeJSONRejectsLargeRequest(t *testing.T) {
+	t.Parallel()
+
+	// Setup test server
+	s := newTestServer(t, &mutableClock{})
+
+	// Prepare a JSON body just above 1MB (1 + 1024 * 1024 bytes)
+	largeSize := 1<<20 + 1
+	largePayload := make(map[string]string)
+	largePayload["data"] = string(make([]byte, largeSize))
+
+	// Send POST request with large JSON
+	status, data := s.do("POST", "/owners", largePayload)
+
+	// Expect 400 Bad Request or similar
+	if status == nethttp.StatusOK {
+		t.Fatalf("expected error status for large JSON, got 200 OK")
+	}
+
+	// Decode error response
+	var errResp struct {
+		Error string `json:"error"`
+	}
+	if err := json.Unmarshal(data, &errResp); err != nil {
+		t.Fatalf("failed to decode error response: %v", err)
+	}
+
+	// Check error code presence
+	if errResp.Error == "" {
+		t.Fatalf("expected error code in response")
+	}
+}
+
 // mutableClock — переключаемый источник времени для DST-тестов.
 type mutableClock struct {
 	mu  sync.Mutex

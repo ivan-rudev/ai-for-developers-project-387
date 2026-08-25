@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	nethttp "net/http"
 
 	"github.com/ivan-rudev/ai-for-developers-project-387/internal/domain"
@@ -63,13 +64,25 @@ func messageOr(err error, fallback string) string {
 	return fallback
 }
 
-// decodeJSON разбирает тело запроса как JSON.
+// decodeJSON разбирает тело запроса как JSON с ограничением размера.
 func decodeJSON(r *nethttp.Request, v any) error {
+	const maxJSONSize = 1 << 20 // 1 MB
+
 	if r.Body == nil {
 		return domain.ErrInvalidInput
 	}
-	if err := json.NewDecoder(r.Body).Decode(v); err != nil {
+
+	limitedReader := io.LimitReader(r.Body, maxJSONSize+1)
+	decoder := json.NewDecoder(limitedReader)
+
+	if err := decoder.Decode(v); err != nil {
 		return domain.ErrInvalidInput
 	}
+
+	// Проверяем, не превышен ли лимит размера
+	if n, err := limitedReader.Read(make([]byte, 1)); n > 0 || err != io.EOF {
+		return domain.ErrInvalidInput // слишком большой запрос
+	}
+
 	return nil
 }
