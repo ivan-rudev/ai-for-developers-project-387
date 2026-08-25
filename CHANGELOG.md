@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.1...v1.0.2) (2026-08-25)
+
+
+### Bug Fixes
+
+* **ci:** harden opencode workflows and fix Lighthouse configuration ([8827d7f](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/8827d7f55e2c2b2320a97a51a765565db2703c96))
+
 ## [1.0.1](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.0...v1.0.1) (2026-08-25)
 
 
