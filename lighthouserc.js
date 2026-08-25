@@ -6,7 +6,7 @@ module.exports = {
     upload: {
       target: 'temporary-public-storage',
     },
-    reporting: {
+    report: {
       html: {
         directory: './lhci-reports',
       },
