@@ -1,0 +1,43 @@
+# Version control
+.git
+.gitignore
+.github
+
+# Go build artifacts and caches
+bin
+dist
+build
+tmp
+.cache
+.gocache
+.awcache
+.golangci-cache
+
+# Local SQLite database (never baked into the image)
+data
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Node.js
+node_modules
+package-lock.json
+npm-debug.log*
+
+# Docs and API spec are not needed at runtime
+docs
+api
+
+# IDE / OS
+.idea
+.vscode
+.cursor
+.DS_Store
+*.swp
+
+# Tool config
+.mcp.json
+skills-lock.json
+.playwright-mcp
+.claude

@@ -1,0 +1,80 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Go workspace file
+go.work
+
+# SQLite database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+/data/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+/bin/
+/dist/
+build/
+dist/
+bundles/
+
+# Dependency directories
+vendor/
+
+# Temporary files
+tmp/
+.cache/
+.gocache/
+.awcache/
+.golangci-cache/
+
+# IDE / Editor
+.cursor/
+.vscode
+*.code-workspace
+.npp*
+
+# Test / coverage
+coverage/
+
+# Logs
+npm-debug.log
+
+# Python
+*__pycache__/
+
+# Documentation build artifacts
+docs/.vitepress/dist
+docs/.vitepress/cache
+
+# Tools / config
+.playwright-mcp/
+.mcp.json
+skills-lock.json
+.claude/settings.local.json
