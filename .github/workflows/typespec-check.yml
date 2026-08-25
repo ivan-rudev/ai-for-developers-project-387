@@ -1,0 +1,23 @@
+name: typespec-check
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: "git diff openapi.yaml"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: ./.github/actions/setup-go-task
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      - name: Check OpenAPI is in sync with TypeSpec
+        run: task check:api

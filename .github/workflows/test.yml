@@ -1,0 +1,17 @@
+name: "Test"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: "go test"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: ./.github/actions/setup-go-task
+
+      - name: Run unit tests
+        run: task test

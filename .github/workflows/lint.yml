@@ -1,0 +1,19 @@
+name: "Lint"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: "golangci-lint"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: ./.github/actions/setup-go-task
+        with:
+          cache-bin: "true"
+
+      - name: Run linter
+        run: task lint

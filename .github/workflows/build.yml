@@ -1,0 +1,17 @@
+name: "Build"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: "go build"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: ./.github/actions/setup-go-task
+
+      - name: Run build
+        run: task build

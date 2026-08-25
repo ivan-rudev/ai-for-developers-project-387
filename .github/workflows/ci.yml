@@ -1,0 +1,38 @@
+name: "CI"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_call:
+  workflow_dispatch:
+ 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: "Build"
+    uses: ./.github/workflows/build.yml
+
+  lint:
+    name: "Lint"
+    needs: build
+    uses: ./.github/workflows/lint.yml
+
+  vet:
+    name: "Vet"
+    needs: build
+    uses: ./.github/workflows/vet.yml
+
+  test:
+    name: "Test"
+    needs: build
+    uses: ./.github/workflows/test.yml
+
+  typespec-check:
+    name: "Type Spec Check"
+    needs: build
+    uses: ./.github/workflows/typespec-check.yml

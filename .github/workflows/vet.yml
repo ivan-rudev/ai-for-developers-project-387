@@ -1,0 +1,17 @@
+name: "Vet"
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  vet:
+    name: "go vet"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: ./.github/actions/setup-go-task
+
+      - name: Run vet
+        run: task vet
