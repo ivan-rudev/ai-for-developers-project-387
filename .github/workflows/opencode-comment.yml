@@ -9,10 +9,13 @@ on:
 jobs:
   opencode-comment:
     if: |
-      contains(github.event.comment.body, ' /oc') ||
-      startsWith(github.event.comment.body, '/oc') ||
-      contains(github.event.comment.body, ' /opencode') ||
-      startsWith(github.event.comment.body, '/opencode')
+      !endsWith(github.event.comment.user.login, '[bot]') &&
+      (
+        contains(github.event.comment.body, ' /oc') ||
+        startsWith(github.event.comment.body, '/oc') ||
+        contains(github.event.comment.body, ' /opencode') ||
+        startsWith(github.event.comment.body, '/opencode')
+      )
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -31,3 +34,10 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
           model: openai/gpt-4.1-mini
+          prompt: |
+            You are a code assistant responding to a /oc or /opencode command.
+            By default, answer questions, explain code, or provide analysis
+            as comments only. Do NOT create pull requests, branches, or push
+            code unless the user explicitly requests it with phrases like
+            "create PR", "make PR", "open PR", "fix", "исправь",
+            "внеси исправления", "создай PR", or "сделай PR".

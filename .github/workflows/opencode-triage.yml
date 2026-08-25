@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: write
-      pull-requests: write
       issues: write
     steps:
       - name: Check account age
@@ -26,11 +24,6 @@ jobs:
             return days >= 30;
           result-encoding: string
 
-      - uses: actions/checkout@v6
-        if: steps.check.outputs.result == 'true'
-        with:
-          persist-credentials: false
-
       - uses: anomalyco/opencode/github@latest
         if: steps.check.outputs.result == 'true'
         env:
@@ -38,7 +31,11 @@ jobs:
         with:
           model: openai/gpt-4.1-mini
           prompt: |
-            Review this issue. If there's a clear fix or relevant docs:
-            - Provide documentation links
-            - Add error handling guidance for code examples
+            You are a triage agent. DO NOT create pull requests, branches,
+            or push code changes. Only leave a comment on the issue.
+
+            Review this issue and:
+            - Link relevant documentation or code references if applicable
+            - Suggest an approach or error handling guidance if helpful
+            - Add labels to categorize the issue if appropriate
             Otherwise, do not comment.
