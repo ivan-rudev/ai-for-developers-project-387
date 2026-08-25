@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.2...v1.0.3) (2026-08-25)
+
+
+### Miscellaneous
+
+* **ci:** migrate opencode workflows from OPENAI_API_KEY to OPENCODE_API_KEY with opencode/big-pickle model ([5c81136](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/5c81136))
+
 ## [1.0.2](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.1...v1.0.2) (2026-08-25)
 
 
