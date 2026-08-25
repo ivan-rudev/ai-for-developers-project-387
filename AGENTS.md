@@ -1,5 +1,12 @@
 # Руководство По Репозиторию
 
+## Коммиты
+
+- Используйте **Conventional Commits** для всех коммитов: `<type>(<scope>): <subject>`.
+- Типы: `feat` (новая фича), `fix` (исправление бага), `docs`, `style`, `refactor`, `test`, `chore`.
+- Scope — опциональный, описывает секцию кодовой базы (компонент, сервис, подсистему).
+- Примеры: `feat(bookings): add conflict detection`, `fix: handle nil slot on expiry`, `chore: update deps`.
+
 ## Проверка Изменений
 
 - Один раз выполните `task setup`, чтобы установить закреплённые инструменты Go в `bin/` и зависимости TypeSpec через `npm ci`.
