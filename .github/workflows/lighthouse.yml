@@ -27,15 +27,6 @@ jobs:
         run: |
           npm install -g @lhci/cli@0.15.x
           lhci autorun
-      - name: Generate index.html
-        run: |
-          latest=$(ls -t lhci-reports/lhci_*.html 2>/dev/null | head -1)
-          if [ -n "$latest" ]; then
-            cat > lhci-reports/index.html <<EOF
-          <!DOCTYPE html>
-          <meta http-equiv="refresh" content="0;url=$(basename "$latest")">
-          EOF
-          fi
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact

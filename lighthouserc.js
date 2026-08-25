@@ -4,12 +4,9 @@ module.exports = {
       staticDistDir: './web',
     },
     upload: {
-      target: 'temporary-public-storage',
-    },
-    report: {
-      html: {
-        directory: './lhci-reports',
-      },
+      target: 'filesystem',
+      outputDir: './lhci-reports',
+      reportFilenamePattern: '%%HOSTNAME%%-%%PATHNAME%%-%%DATETIME%%.report.%%EXTENSION%%',
     },
   },
 };
