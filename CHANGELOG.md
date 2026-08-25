@@ -14,6 +14,10 @@
 * **lighthouse:** rename reporting to report, add index.html redirect ([df6bf6d](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/df6bf6daeb4b678f60034d51a491b665455093c3))
 * **lighthouse:** use filesystem upload target for HTML reports ([ad12ff3](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/ad12ff3ede9cab9b7ee452b3cd5bfba8ada49750))
 
+### Miscellaneous
+
+* **ci:** migrate opencode workflows from OPENAI_API_KEY to OPENCODE_API_KEY with opencode/big-pickle model ([5c81136](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/5c81136))
+
 ## [1.0.2](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.1...v1.0.2) (2026-08-25)
 
 
