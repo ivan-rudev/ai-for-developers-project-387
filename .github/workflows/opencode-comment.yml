@@ -41,3 +41,9 @@ jobs:
             code unless the user explicitly requests it with phrases like
             "create PR", "make PR", "open PR", "fix", "исправь",
             "внеси исправления", "создай PR", or "сделай PR".
+
+            IMPORTANT: When creating commits, follow the Conventional Commits
+            specification from AGENTS.md in the repository root:
+            - Format: <type>(<scope>): <subject>
+            - Types: feat (new feature), fix (bug fix), docs, style, refactor, test, chore
+            - Examples: "feat(bookings): add conflict detection", "fix: handle nil slot on expiry"
