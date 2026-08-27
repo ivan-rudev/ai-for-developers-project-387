@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.4](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.3...v1.0.4) (2026-08-27)
+
+
+### Bug Fixes
+
+* added favicon.ico and link tag to index.html. ([#12](https://github.com/ivan-rudev/ai-for-developers-project-387/issues/12)) ([1102d7e](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/1102d7e237025ca78332f6a0bcd0fcd4635daafe))
+* added missing checkout step to fix triage workflow ([#10](https://github.com/ivan-rudev/ai-for-developers-project-387/issues/10)) ([c19298e](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/c19298ed521aeaa44df36f9b015173484fd9b17a))
+* **ci:** add concurrency to prevent duplicate OpenCode reviews ([#15](https://github.com/ivan-rudev/ai-for-developers-project-387/issues/15)) ([40b102d](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/40b102d4ef57620c57249920de809fe56326fd36))
+* **ci:** add conventional commits instructions to opencode comment prompt ([85e2520](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/85e2520f6185cb2ad8fe2a27ed25f852d1027557))
+
 ## [1.0.3](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.2...v1.0.3) (2026-08-25)
 
 
