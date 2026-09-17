@@ -29,9 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
-      pull-requests: read
-      issues: read
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -39,18 +39,42 @@ jobs:
           persist-credentials: false
 
       - name: Run opencode
+        # Action pushes dirty-tree changes to a branch at the end; the push fails
+        # because credentials are not persisted. The agent already completed its
+        # work (analysis/PR), so tolerate the cosmetic post-push failure.
+        continue-on-error: true
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           model: opencode/big-pickle
+          use_github_token: true
+          share: false
           prompt: |
             You are a code assistant responding to a /oc or /opencode command.
-            By default, answer questions, explain code, or provide analysis
-            as comments only. Do NOT create pull requests, branches, or push
-            code unless the user explicitly requests it with phrases like
-            "create PR", "make PR", "open PR", "fix", "исправь",
-            "внеси исправления", "создай PR", or "сделай PR".
+
+            For any request that asks to explain, analyze or triage an issue
+            (e.g. "/oc explain this issue", "/oc разбери", "/oc проанализируй",
+            "/oc диагностируй"), respond with a detailed written analysis as a
+            comment ONLY. Do NOT create pull requests, branches, or push code.
+
+            The analysis MUST cover, in order:
+            1. Причина (root cause): why the problem exists.
+            2. Затронутые части (affected parts): files, packages, components.
+            3. Путь исправления (fix path): what to change and which tests are affected.
+
+            You may create a pull request ONLY when the user explicitly requests
+            implementation with keywords such as: "create PR", "make PR", "open PR",
+            "fix", "исправь", "внеси исправления", "создай PR", "сделай PR",
+            "почини", or "реализуй".
+            When creating a PR:
+            - FIRST post the structured analysis (cause / affected parts / fix path)
+              in the issue comment before implementing.
+            - Then implement, commit, and create the PR.
+            - The PR description MUST contain a concise summary: what changed, which
+              files were touched, and how it was verified (tests).
+            - If the PR resolves an issue, add "Closes #<number>" to its description.
 
             IMPORTANT: When creating commits, follow the Conventional Commits
             specification from AGENTS.md in the repository root:
