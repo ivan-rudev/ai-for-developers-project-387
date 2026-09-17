@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.4](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.3...v1.0.4) (2026-09-17)
+
+
+### Bug Fixes
+
+* added favicon.ico and link tag to index.html. ([#12](https://github.com/ivan-rudev/ai-for-developers-project-387/issues/12)) ([1102d7e](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/1102d7e237025ca78332f6a0bcd0fcd4635daafe))
+* added missing checkout step to fix triage workflow ([#10](https://github.com/ivan-rudev/ai-for-developers-project-387/issues/10)) ([c19298e](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/c19298ed521aeaa44df36f9b015173484fd9b17a))
+* **ci:** add concurrency to prevent duplicate OpenCode reviews ([#15](https://github.com/ivan-rudev/ai-for-developers-project-387/issues/15)) ([40b102d](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/40b102d4ef57620c57249920de809fe56326fd36))
+* **ci:** add conventional commits instructions to opencode comment prompt ([85e2520](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/85e2520f6185cb2ad8fe2a27ed25f852d1027557))
+* **ci:** block bot/agent-triggered OpenCode runs ([4e04fe7](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/4e04fe72ec1462fda9dba73f924828dc51392cfb))
+* **ci:** create PRs via OpenCode GitHub App instead of the Actions token ([8bfbfa8](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/8bfbfa8b6c7e2a8e484cfc6ee4423700b0962156))
+* **ci:** enable audit agent GitHub write access and report artifact ([6f56fc2](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/6f56fc289f119503ec6bf4509fcc3bbc32db24c9))
+* **ci:** give opencode action git auth and keep audit tree clean ([fbf85b7](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/fbf85b7135c1cf7590d4a7eb910b725fc8262d10))
+* **ci:** keep audit agent from pushing session branch ([472ff0a](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/472ff0a8b11ef353f7aa38088e7c50460ebf6e25))
+* **ci:** require analysis-first and PR description in /oc prompt ([cb56abd](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/cb56abd2c735b41c4659565ec70d42fba4b2b901))
+* **ci:** tolerate action post-push failure in audit job ([282d653](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/282d653d4cae1b739b2312bf2057abf11d87a448))
+* **ci:** write audit report into the repo to avoid permission hang ([295c229](https://github.com/ivan-rudev/ai-for-developers-project-387/commit/295c229e4c6ce1a92add98ca4e0ce5cfb50735a8))
+
 ## [1.0.3](https://github.com/ivan-rudev/ai-for-developers-project-387/compare/v1.0.2...v1.0.3) (2026-08-25)
 
 
