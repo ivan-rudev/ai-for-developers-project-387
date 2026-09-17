@@ -76,6 +76,63 @@ docker rm -f calendar-mvp
 docker volume rm calendar-data
 ```
 
+## API
+
+REST API описан в `api/generated/openapi.yaml` (источник правды — TypeSpec-контракт
+в `api/`). Краткая сводка эндпоинтов:
+
+| Метод | Путь | Назначение |
+|-------|------|------------|
+| GET | `/healthz` | Healthcheck |
+| GET | `/api/owners` | Список активных владельцев |
+| GET | `/api/owners/{uuid}` | Информация о владельце и настройки доступности |
+| POST | `/api/owners` | Создание владельца |
+| GET | `/api/owners/{uuid}/events` | Список активных событий владельца |
+| POST | `/api/owners/{uuid}/events` | Создание события |
+| GET | `/api/owners/{uuid}/bookings` | Публичный список бронирований |
+| GET | `/api/owners/{uuid}/slots?event_uuid=…` | Слоты на 14 дней |
+| POST | `/api/bookings` | Создание бронирования |
+| GET | `/api/admin` | Информация о default owner |
+| GET | `/api/admin/bookings` | Предстоящие бронирования default owner |
+| GET | `/api/admin/events` | События default owner |
+| POST | `/api/admin/events` | Создание события от имени default owner |
+
+Детальные примеры запросов/ответов, коды статусов и схема ошибок — в `docs/PRD.md`
+(§4–5) и в TypeSpec-исходниках (`api/`).
+
+## События и длительность встреч
+
+**Event** — тип встречи владельца (название, описание, длительность). При создании
+владельца автоматически создаются два события по умолчанию из `config.yaml`
+(`default.events`): «Короткая встреча» на 15 минут и «Стандартная встреча» на 30 минут.
+Название события уникально в рамках одного владельца. Дополнительные типы встреч можно
+создавать в админке (`/office`) или через API (`POST /api/owners/{uuid}/events`,
+`POST /api/admin/events`).
+
+## Часовые пояса и UTC
+
+Все времена в базе хранятся в UTC. Рабочие часы задаются настройками владельца:
+`work_start`/`work_end` и рабочие дни `working_days` (по умолчанию 09:00–18:00,
+Пн–Пт, часовой пояс `Europe/Moscow`). Слоты считаются и отображаются в часовом поясе
+владельца; бронирования через API возвращаются в UTC (ISO 8601, суффикс `Z`).
+
+## Админская панель
+
+Личный кабинет владельца на `/office` — это привязка к владельцу, UUID которого указан
+в `config.yaml` (`admin.owner_uuid`). В MVP это seed-владелец Bob — **первый владелец**,
+создаваемый миграцией при старте. Панель работает **без аутентификации** и показывает
+email гостей, поэтому сервис — учебное демо: не разворачивайте его в публичной или
+общей сети. В кабинете две вкладки: предстоящие бронирования и типы встреч (с созданием
+нового события).
+
+## Rate limiting
+
+Rate limiting (in-memory, `golang.org/x/time/rate`) применяется к публичным мутациям:
+`POST /api/bookings`, `POST /api/owners`, `POST /api/owners/{uuid}/events`,
+`POST /api/admin/events`. Лимит — 30 запросов/мин с одного IP при burst = 10; при
+превышении возвращается `429 Too Many Requests`. Настраивается в `config.yaml`
+(секция `rate_limit`).
+
 ## ИИ-агенты: OpenCode GitHub workflows
 
 Репозиторий содержит четыре GitHub Actions workflow, запускающих агента
