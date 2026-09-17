@@ -27,6 +27,7 @@ jobs:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:
           model: opencode/big-pickle
+          share: false
           prompt: |
             Review this pull request:
             - Find bugs and risky changes

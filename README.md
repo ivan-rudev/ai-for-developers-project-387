@@ -76,6 +76,76 @@ docker rm -f calendar-mvp
 docker volume rm calendar-data
 ```
 
+## ИИ-агенты: OpenCode GitHub workflows
+
+Репозиторий содержит четыре GitHub Actions workflow, запускающих агента
+OpenCode (`anomalyco/opencode/github@latest`) с моделью `opencode/big-pickle`.
+Все запуски требуют secret `OPENCODE_API_KEY` и используют `share: false`.
+Запуски, инициированные ботами (`github-actions[bot]` и другими `[bot]`),
+отсекаются условием `if`.
+
+| Workflow | Событие (триггер) | Модель | Назначение | Место результатов |
+|----------|-------------------|--------|------------|-------------------|
+| `opencode-review.yml` — авто-ревью PR | `pull_request`: opened, synchronize, reopened, ready_for_review | `opencode/big-pickle` | Ревью человеческих PR (PR от ботов и release-please пропускаются): поиск багов и рискованных изменений, оценка читаемости и поддерживаемости, actionable-комментарии | Комментарии в PR |
+| `opencode-triage.yml` — триаж issues | `issues`: opened | `opencode/big-pickle` | Триаж новых issues от аккаунтов старше 30 дней: ссылки на документацию и код, предложение подхода и рекомендаций по обработке ошибок, добавление меток. Не комментирует, если добавить нечего | Комментарий и метки на issue |
+| `opencode-audit.yml` — еженедельный аудит кода | `schedule`: еженедельно в среду 05:00 UTC; ручной запуск `workflow_dispatch` (требуется промпт, модель опционально) | `opencode/big-pickle` (по умолчанию) | Поиск TODO/FIXME/HACK в исходниках и `docs/TODO.md`; отчёт пишется в `audit-report.md` в корне репозитория; при находках создаётся один GitHub issue (skip, если похожий уже открыт) | `audit-report.md` в корне репозитория + опционально issue; отчёт также загружается артефактом |
+| `opencode-comment.yml` — ответ на команду | `issue_comment` и `pull_request_review_comment`: created при команде `/oc` или `/opencode` | `opencode/big-pickle` | Ассистент по `code`-командам: анализ (explain/разбери/проанализируй/диагностируй) отвечает структурированным комментарием «причина → затронутые части → путь исправления» без веток и PR; запрос на реализацию (fix/исправь/создай PR и т.п.) сначала публикует тот же анализ, затем коммитит по Conventional Commits и открывает PR | Аналитический комментарий и/или PR |
+
+### Команды
+
+- `/oc` и `/opencode` в комментарии к issue или PR (в начале строки или после
+  пробела) запускают `opencode-comment.yml`.
+- Авто-ревью (`opencode-review.yml`) и триаж (`opencode-triage.yml`) запускаются
+  автоматически: открытый/обновлённый PR и открытая issue соответственно.
+- Аудит запускается автоматически по расписанию (среда, 05:00 UTC) или вручную:
+  Actions → «Weekly Code Audit» → `Run workflow` → ввести промпт задачи.
+
+### Примечания
+
+- `share: false` во всех workflow: сессии OpenCode публично не публикуются
+  (агент не создаёт share-ссылки). Это сознательное решение — агенты работают
+  с приватным кодом репозитория, контентом issues и PR; публикация сессий не
+  несёт пользы и расширяет поверхность утечки кода/данных.
+- `concurrency` дедуплицирует запуски внутри workflow: для review — по номеру
+  PR, для comment — по номеру issue/PR; одновременно могут идти не более одного
+  запуска.
+- Cross-workflow блокировки нет: авто-ревью на push и `/oc`-комментарий могут
+  выполняться параллельно — это намеренное поведение.
+- Агентные workflow (`audit`, `comment`) выполняют в конце `continue-on-error`:
+  action пытается запушить изменившееся дерево, но push не проходит без
+  сохранённых credentials — пост-пуш сбой косметический и не влияет на
+  результат (отчёт/PR уже готовы).
+
+## Самооценка: первый проход и итерации
+
+Короткая самооценка работы агента над проектом (по фактической истории
+коммитов).
+
+**С первого прохода закрыто:**
+
+- Продуктовый MVP (фазы 1–8 `docs/TODO.md`: домен, use cases,
+  SQLite-репозитории, HTTP-слой, тесты, SPA, Docker) — вошёл в первые
+  коммиты и в дальнейшем не переделывался.
+- Базовая CI-обвязка (build, ci, lint, test, vet, typespec-check) и
+  документация (README, AGENTS.md, docs/*).
+
+**Потребовались итерации:**
+
+- OpenCode workflow — самая итеративная область: триаж (добавлен недостающий
+  checkout), авто-ревью (skip release-please, concurrency, фикс YAML-tag,
+  миграция на `OPENCODE_API_KEY`/big-pickle), аудит (write access, отчёт
+  в корень репозитория, artifact, запрет пуша session-ветки, tolerate
+  post-push, еженедельный cron), промпт `/oc` (analysis-first, Conventional
+  Commits).
+- Lighthouse — правки конфигурации: Node 20/24, environment на уровне job,
+  переименование отчёта, upload target, index redirect, favicon.
+- Release-please — ручной триггер релиза, skip OpenCode-ревью для release-PR.
+- Единичные продуктовые фиксы: vet-ошибка `NewRouter` в тестах, лимит размера
+  тела запроса.
+
+**Вывод:** продукт собран преимущественно с первого прохода; основное число
+итераций пришлось на автоматизацию CI и агентные workflow.
+
 ## Status and limitations
 
 This repository currently contains the design-first specification for a booking MVP.
