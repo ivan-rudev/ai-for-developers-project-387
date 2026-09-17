@@ -20,7 +20,6 @@ jobs:
     if: ${{ github.event_name != 'workflow_dispatch' || !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: write
       pull-requests: write
       issues: write
@@ -33,10 +32,15 @@ jobs:
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          model: opencode/big-pickle
-          prompt: |
-            Review the codebase for TODO, FIXME, and HACK comments.
-            Group findings by file and severity.
-            Create a single issue with a structured summary.
-            If similar issues already exist, reference them.
+          model: ${{ inputs.model || 'opencode/big-pickle' }}
+          use_github_token: true
+          prompt: ${{ inputs.prompt || 'Review the codebase for TODO, FIXME, and HACK comments in source files and in docs/TODO.md. Write the complete audit report to audit-report.md at the repository root. If there are actionable findings, create a single GitHub issue by running gh issue create with --body-file audit-report.md and a fitting title; first check gh issue list --state open and skip creation if a similar issue already exists. Include the created issue URL in your final summary. Do not commit or push anything.' }}
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report
+          path: audit-report.md
+          if-no-files-found: warn
