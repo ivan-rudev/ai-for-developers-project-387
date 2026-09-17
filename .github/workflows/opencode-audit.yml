@@ -25,17 +25,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        with:
-          persist-credentials: false
       - name: Configure git identity
         run: |
           git config user.name "opencode-audit[bot]"
           git config user.email "opencode-audit[bot]@users.noreply.github.com"
       - name: Run OpenCode
-        # Action pushes dirty-tree changes to a branch at the end; the push fails
-        # because credentials are not persisted. The agent already completed its
-        # work (report + issue), so tolerate the cosmetic post-push failure.
-        continue-on-error: true
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
@@ -44,11 +38,11 @@ jobs:
           model: ${{ inputs.model || 'opencode/big-pickle' }}
           use_github_token: true
           share: false
-          prompt: ${{ inputs.prompt || 'Review the codebase for TODO, FIXME, and HACK comments in source files and in docs/TODO.md. Write the complete audit report to audit-report.md in the repository root. If there are actionable findings, create a single GitHub issue by running gh issue create with --body-file audit-report.md and a fitting title; first check gh issue list --state open and skip creation if a similar issue already exists. Include the created issue URL in your final summary. Do not run any git add, git commit or git push commands.' }}
+          prompt: ${{ inputs.prompt || 'Review the codebase for TODO, FIXME, and HACK comments in source files and in docs/TODO.md. Write the complete audit report to $RUNNER_TEMP/audit-report.md (outside the repository working tree). If there are actionable findings, create a single GitHub issue by running gh issue create with --body-file "$RUNNER_TEMP/audit-report.md" and a fitting title; first check gh issue list --state open and skip creation if a similar issue already exists. Include the created issue URL in your final summary. Do not run any git add, git commit or git push commands.' }}
       - name: Upload audit report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: audit-report
-          path: audit-report.md
+          path: ${{ runner.temp }}/audit-report.md
           if-no-files-found: warn

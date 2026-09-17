@@ -35,14 +35,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        with:
-          persist-credentials: false
 
       - name: Run opencode
-        # Action pushes dirty-tree changes to a branch at the end; the push fails
-        # because credentials are not persisted. The agent already completed its
-        # work (analysis/PR), so tolerate the cosmetic post-push failure.
-        continue-on-error: true
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
