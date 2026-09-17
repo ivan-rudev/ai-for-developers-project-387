@@ -6,6 +6,7 @@ on:
 
 jobs:
   opencode-triage:
+    if: ${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -30,7 +31,7 @@ jobs:
           persist-credentials: false
 
       - uses: anomalyco/opencode/github@latest
-        if: steps.check.outputs.result == 'true'
+        if: ${{ steps.check.outputs.result == 'true' && !endsWith(github.event.issue.user.login, '[bot]') }}
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
         with:

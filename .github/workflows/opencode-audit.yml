@@ -15,6 +15,9 @@ on:
         type: string
 jobs:
   opencode-audit:
+    # Для schedule github.actor = github-actions[bot], поэтому guard применяем
+    # только к ручному запуску workflow_dispatch. Автоматический запуск агентами запрещён.
+    if: ${{ github.event_name != 'workflow_dispatch' || !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
