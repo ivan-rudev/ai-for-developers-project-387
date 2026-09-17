@@ -33,6 +33,10 @@ jobs:
           git config user.name "opencode-audit[bot]"
           git config user.email "opencode-audit[bot]@users.noreply.github.com"
       - name: Run OpenCode
+        # Action pushes dirty-tree changes to a branch at the end; the push fails
+        # because credentials are not persisted. The agent already completed its
+        # work (report + issue), so tolerate the cosmetic post-push failure.
+        continue-on-error: true
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
