@@ -138,15 +138,17 @@ Rate limiting (in-memory, `golang.org/x/time/rate`) применяется к п
 Репозиторий содержит четыре GitHub Actions workflow, запускающих агента
 OpenCode (`anomalyco/opencode/github@latest`) с моделью `opencode/big-pickle`.
 Все запуски требуют secret `OPENCODE_API_KEY` и используют `share: false`.
-Запуски, инициированные ботами (`github-actions[bot]` и другими `[bot]`),
-отсекаются условием `if`.
+Запуски, инициированные ботами (`[bot]`), отсекаются условием `if`; исключение —
+плановый аудит по расписанию (его actor — `github-actions[bot]`), который
+разрешён намеренно. Ручной запуск аудита через `workflow_dispatch` по-прежнему
+заблокирован для ботов.
 
 | Workflow | Событие (триггер) | Модель | Назначение | Место результатов |
 |----------|-------------------|--------|------------|-------------------|
 | `opencode-review.yml` — авто-ревью PR | `pull_request`: opened, synchronize, reopened, ready_for_review | `opencode/big-pickle` | Ревью человеческих PR (PR от ботов и release-please пропускаются): поиск багов и рискованных изменений, оценка читаемости и поддерживаемости, actionable-комментарии | Комментарии в PR |
-| `opencode-triage.yml` — триаж issues | `issues`: opened | `opencode/big-pickle` | Триаж новых issues от аккаунтов старше 30 дней: ссылки на документацию и код, предложение подхода и рекомендаций по обработке ошибок, добавление меток. Не комментирует, если добавить нечего | Комментарий и метки на issue |
-| `opencode-audit.yml` — еженедельный аудит кода | `schedule`: еженедельно в среду 05:00 UTC; ручной запуск `workflow_dispatch` (требуется промпт, модель опционально) | `opencode/big-pickle` (по умолчанию) | Поиск TODO/FIXME/HACK в исходниках и `docs/TODO.md`; отчёт пишется в `audit-report.md` в корне репозитория; при находках создаётся один GitHub issue (skip, если похожий уже открыт) | `audit-report.md` в корне репозитория + опционально issue; отчёт также загружается артефактом |
-| `opencode-comment.yml` — ответ на команду | `issue_comment` и `pull_request_review_comment`: created при команде `/oc` или `/opencode` | `opencode/big-pickle` | Ассистент по `code`-командам: анализ (explain/разбери/проанализируй/диагностируй) отвечает структурированным комментарием «причина → затронутые части → путь исправления» без веток и PR; запрос на реализацию (fix/исправь/создай PR и т.п.) сначала публикует тот же анализ, затем коммитит по Conventional Commits и открывает PR | Аналитический комментарий и/или PR |
+| `opencode-triage.yml` — триаж issues | `issues`: opened | `opencode/big-pickle` | Триаж новых issues от аккаунтов старше 30 дней (issues от `[bot]` пропускаются): ссылки на документацию и код, предложение подхода и рекомендаций по обработке ошибок, добавление меток. Не комментирует, если добавить нечего | Комментарий и метки на issue |
+| `opencode-audit.yml` — еженедельный аудит кода | `schedule`: еженедельно в среду 05:00 UTC; ручной запуск `workflow_dispatch` (требуется промпт, модель опционально) | `opencode/big-pickle` (по умолчанию) | Поиск TODO/FIXME/HACK в исходниках и `docs/TODO.md`; отчёт пишется во временный файл вне рабочего дерева (`$RUNNER_TEMP/audit-report.md`), рабочее дерево остаётся чистым; при находках создаётся один GitHub issue (skip, если похожий уже открыт) | Опционально GitHub issue (создаётся через `gh issue create --body-file`); отчёт выкладывается артефактом `audit-report` |
+| `opencode-comment.yml` — ответ на команду | `issue_comment` и `pull_request_review_comment`: created при команде `/oc` или `/opencode` | `opencode/big-pickle` | Ассистент по `code`-командам: анализ (explain/разбери/проанализируй/диагностируй) отвечает структурированным комментарием «причина → затронутые части → путь исправления» без веток и PR; запрос на реализацию (fix/исправь/создай PR и т.п.) сначала публикует тот же анализ, затем коммитит по Conventional Commits (ветку пушит и PR открывает workflow от имени OpenCode GitHub App) | Аналитический комментарий и/или PR |
 
 ### Команды
 
@@ -171,10 +173,12 @@ OpenCode (`anomalyco/opencode/github@latest`) с моделью `opencode/big-pi
   запуска.
 - Cross-workflow блокировки нет: авто-ревью на push и `/oc`-комментарий могут
   выполняться параллельно — это намеренное поведение.
-- Агентные workflow (`audit`, `comment`) выполняют в конце `continue-on-error`:
-  action пытается запушить изменившееся дерево, но push не проходит без
-  сохранённых credentials — пост-пуш сбой косметический и не влияет на
-  результат (отчёт/PR уже готовы).
+- Агентные workflow не используют `continue-on-error`. `comment` пушит ветку и
+  открывает PR от имени OpenCode GitHub App (OIDC-токен, `persist-credentials:
+  false`), поэтому PR триггерит обычный CI; агент только коммитит по Conventional
+  Commits и не выполняет `git push`/`gh pr create`. `audit` не пушит вовсе: отчёт
+  пишется вне рабочего дерева и выкладывается артефактом, issue создаётся через
+  `gh issue create`.
 
 ## Самооценка: первый проход и итерации
 
